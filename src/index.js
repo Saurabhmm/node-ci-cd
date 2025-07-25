@@ -13,8 +13,10 @@ app.get('/health', (req, res) => {
 // Set the port for the server to listen on, defaulting to 3000 if not specified in environment
 const PORT = process.env.PORT || 3000;
 
-// Start the server and log the port it's running on
-app.listen(PORT, () => console.log(`Running on port ${PORT}`));
+// Start the server only if this file is run directly (not imported by tests)
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Running on port ${PORT}`));
+}
 
 // Export the Express app instance for use in other modules (e.g., testing)
 module.exports = app;

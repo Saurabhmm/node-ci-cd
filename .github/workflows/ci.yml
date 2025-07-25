@@ -1,34 +1,35 @@
-name: CI Pipeline
+name: CI Pipeline with Docker Push
 
 on:
   push:
-    branches: [ main ]         # Trigger pipeline on pushes to main
+    branches: [ main ]
   pull_request:
-    branches: [ main ]         # Also run pipeline for PRs to main
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest     # GitHub-hosted VM environment
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
-        # Pulls your GitHub code onto the runner VM
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-        # Installs Node.js (same as your dev environment)
 
       - name: Install dependencies
         run: npm install
-        # Just like you do locally
 
       - name: Run tests
         run: npm test
-        # Executes Jest tests. Build fails if any test fails
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t node-ci-cd-demo .
-        # This builds your Docker image to ensure Dockerfile is valid
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/node-ci-cd-demo:latest .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/node-ci-cd-demo:latest

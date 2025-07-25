@@ -24,7 +24,7 @@ Add deployment step to GCP Cloud Run or AWS ECS
 To start server : 
 run npm start command and then visit http://localhost:3000/health , you will get output on screen : { "status": "ok" }
 
----------
+----------
 
 To run test : 
 execute command : npm test
